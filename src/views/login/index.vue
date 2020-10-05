@@ -47,7 +47,7 @@
       <div class="captchaItem">
         <el-form-item prop="captcha" class="captcha">
           <span class="svg-container">
-            <svg-icon icon-class="captcha"/>
+             <svg-icon icon-class="captcha"/>
           </span>
           <el-input
             ref="captcha"
@@ -64,7 +64,14 @@
           <img :src="imgurl" @click="reflash" :title="altmsg">
         </div>
       </div>
-      <el-checkbox v-model="loginForm.rememberMe" class="rememberMe" label="记住我" name="rememberMe"></el-checkbox>
+      <div class="rememberMeDiv">    
+        <el-checkbox v-model="loginForm.rememberMe" class="rememberMe"  label="记住我" name="rememberMe"></el-checkbox>
+        <div v-show="false">
+          <span style="color:red;font-size:0.12rem;">演示模式</span>
+          <span style="color:red;font-size:0.12rem;">账号：test</span>
+          <span style="color:red;font-size:0.12rem;">密码:123456</span>
+        </div>
+      </div> 
       <el-button
         :loading="loading"
         type="primary"
@@ -236,7 +243,7 @@ $cursor: #fff;
     display: flex;
     line-height: 40px;
     flex-wrap: nowrap;
-    margin-bottom: 22px;
+    margin-bottom: 5px;
     justify-content: space-between;
   }
   .captcha {
@@ -247,6 +254,16 @@ $cursor: #fff;
     width: 30%;
     height: 47px;
     line-height: 40px;
+  }
+
+  .rememberMeDiv{
+     width: auto;
+    height: 10px;
+    display: flex;
+    line-height: 40px;
+    flex-wrap: nowrap;
+    margin-bottom: 30px;
+    justify-content: space-between;
   }
   .remerberMe {
     color: white;
