@@ -174,7 +174,9 @@
                  </el-form-item>
           </el-col>
        </el-row>
-
+              <el-form-item v-show="false" label="创建时间" prop="ctime">
+                   <el-input v-model.trim="temp.ctime"/>
+                 </el-form-item>
        <el-row :gutter="50">
           <el-col :span="12">
                 <el-form-item label="部门" prop="deptId">
@@ -308,6 +310,7 @@ export default {
         roles:[],
         locked:0,
         sex:0,
+        ctime:'',
         remark: "",
       },
       selectedDepts:[],
@@ -450,6 +453,7 @@ export default {
         roles:[],
         locked:0,
         sex:1,
+        ctime:'',
         remark: "",
       };
     },
@@ -465,6 +469,7 @@ export default {
         roles:[],
         locked:row.locked,
         sex:row.sex,
+        ctime:row.ctime,
         remark: row.remark,
       };
     },
@@ -507,17 +512,19 @@ export default {
     createData() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          
+         
           addUser(this.temp).then((response) => {
 
             if(response.code != '0'){
                   this.$message.error('添加用户失败！')
                   return
                 }else{
-                  let uid = response.data
+                  let uid = response.data.uid
+                   let createTime = response.data.ctime
                   this.dialogFormVisible = false
                   this.$message.success('添加用户成功！')
                   this.temp.userId = uid
+                  this.temp.ctime = createTime
                   this.list.push(this.temp);
               }
             

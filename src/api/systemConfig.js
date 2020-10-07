@@ -8,6 +8,14 @@ export function getSysConfig() {
   })
 }
 
+
+export function getSysLogInConfig() {
+  return request({
+    url: '/system/loginConfig',
+    method: 'get',
+  })
+}
+
 export function updateSysConfig(param) {
   return request({
     url: '/system/config',

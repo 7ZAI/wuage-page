@@ -17,7 +17,7 @@
         </span>
         <el-input
           ref="loginName"
-          v-model="loginForm.loginName"
+          v-model.trim="loginForm.loginName"
           placeholder="用户名"
           name="loginName"
           type="text"
@@ -32,7 +32,7 @@
         <el-input
           :key="passwordType"
           ref="password"
-          v-model="loginForm.password"
+          v-model.trim="loginForm.password"
           :type="passwordType"
           placeholder="密码"
           name="password"
@@ -44,7 +44,7 @@
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
         </span>
       </el-form-item>
-      <div class="captchaItem">
+      <div class="captchaItem" v-if="captchashow">
         <el-form-item prop="captcha" class="captcha">
           <span class="svg-container">
              <svg-icon icon-class="captcha"/>
@@ -66,7 +66,7 @@
       </div>
       <div class="rememberMeDiv">    
         <el-checkbox v-model="loginForm.rememberMe" class="rememberMe"  label="记住我" name="rememberMe"></el-checkbox>
-        <div v-show="false">
+        <div v-show="this.Config.SYSTEM_MODE == 1">
           <span style="color:red;font-size:0.12rem;">演示模式</span>
           <span style="color:red;font-size:0.12rem;">账号：test</span>
           <span style="color:red;font-size:0.12rem;">密码:123456</span>
@@ -83,6 +83,8 @@
 </template>
 
 <script>
+
+import { getSysLogInConfig } from "@/api/systemConfig";
 import { validUsername } from "@/utils/validate";
 export default {
   name: "Login",
@@ -123,6 +125,12 @@ export default {
         captcha: "",
         rememberMe: false
       },
+      captchashow:false,
+      Config:{
+        CAPTCHA_SWITCH:1,
+        SYSTEM_MODE:0,
+        LOGIN_SWITCH:1,
+      },
       loginRules: {
         loginName: [
           { required: true, trigger: "blur", validator: validateUsername }
@@ -139,7 +147,10 @@ export default {
       redirect: undefined
     };
   },
-
+  
+  created(){
+    this.getConfig()
+  },
   watch: {
     $route: {
       handler: function(route) {
@@ -149,6 +160,24 @@ export default {
     }
   },
   methods: {
+
+    getConfig(){
+      getSysLogInConfig().then((responce)=>{
+     
+          this.Config = responce.data;
+
+        if(responce.data.SYSTEM_MODE === 1){
+          this.loginForm.loginName = "test" 
+          this.loginForm.password = "123456"
+        }
+
+         if(responce.data.CAPTCHA_SWITCH === 1){
+         this.captchashow = true
+        }
+
+     
+      })
+    },
     showPwd() {
       if (this.passwordType === "password") {
         this.passwordType = "";
