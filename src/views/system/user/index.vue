@@ -27,7 +27,7 @@
     
     <el-main>
       <div class="filter-container" style="height:40px;">
-      <el-input v-model="listQuery.keywords" size="small" placeholder="用户名" style="width: 200px;height:40px;" class="filter-item" />
+      <el-input v-model="listQuery.keywords" size="small" placeholder="用户名或登陆名" style="width: 200px;height:40px;" class="filter-item" />
      
       <el-select v-model="listQuery.status" size="small" placeholder="状态" clearable class="filter-item" style="width: 130px;height:40px;">
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -201,7 +201,7 @@
              </el-form-item>
           </el-col>
        </el-row>
-        <el-form-item label="锁定" prop="locked">
+        <!-- <el-form-item label="锁定" prop="locked">
           <el-switch
                 :active-value=1
                 :inactive-value=0
@@ -209,7 +209,7 @@
                 active-color="#13ce66"
                 inactive-color="#ff4949"
           ></el-switch>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="备注" prop="remark">
           <el-input
             v-model="temp.remark"
@@ -539,8 +539,7 @@ export default {
       // this.temp = Object.assign({}, row); // copy obj
       // console.log(this.temp)
       this.dialogStatus = "update";
-      this.dialogFormVisible = true;
-
+     
       // let node = this.$refs.guideDeptTree.getNode(row.deptId)
 
       // if(node != null && this.departmentTree != null){
@@ -550,17 +549,26 @@ export default {
 
       getRoles(row.deptId,row.userId).then(response =>{
         // console.log(response)
-        let roleArr = response.data.roles
-        this.textForShow = response.data.deptName
-        let tempRoles = new Array()
-        
-        if(roleArr != undefined && roleArr.length>0){
-           roleArr.forEach(element => {
-             tempRoles.push(element.roleId)
-           });
-         
+         if(response.code != '0'){
+                  this.$message.error(response.msg)
+                  this.dialogFormVisible = false
+                  return
+        }else{
+          let roleArr = response.data.roles
+          this.textForShow = response.data.deptName
+          let tempRoles = new Array()
+          
+          if(roleArr != undefined && roleArr.length>0){
+            roleArr.forEach(element => {
+              tempRoles.push(element.roleId)
+            });
+          
+          }
+          this.dialogFormVisible = true
+          this.temp.roles = tempRoles
         }
-        this.temp.roles = tempRoles
+       
+        
       })
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
@@ -691,10 +699,10 @@ export default {
             strtitle = '确认解除'
         }
 
-        if(row.userId == 1){
-          this.$message.error('您不具有操作超级管理员的权限！')
-          return 
-        }
+        // if(row.userId == 1){
+        //   this.$message.error('您不具有操作超级管理员的权限！')
+        //   return 
+        // }
       
 
       MessageBox.confirm(str, strtitle, {
@@ -708,11 +716,9 @@ export default {
                 row.locked = 1
               }
               let param = {userId:row.userId,lockedStatus: row.locked}
-              updateLocked(param).then(response =>{
-
-                if(response.code != '0'){
-                    this.$message.error('修改失败！')
-
+              updateLocked(param).then(res =>{
+                  console.log(res)
+                if(res == undefined){
                     if(row.locked >= 1){
                         row.locked = 0
                       }else{
@@ -723,9 +729,15 @@ export default {
                     // this.dataScopedialogFormVisible = false
                     this.$message.success('修改成功！')
                   }
+              }).catch(error =>{
+                   if(row.locked >= 1){
+                        row.locked = 0
+                      }else{
+                        row.locked = 1
+                  }
               })
-          }).catch(() => {
-              
+          }).catch(error => {
+            console.log(error)
           });
      },
 

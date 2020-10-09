@@ -45,7 +45,7 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     
-    // console.log(res)
+    console.log(res)
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== '0') {
    
@@ -61,7 +61,7 @@ service.interceptors.response.use(
           confirmButtonText: '重新登陆',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
+        }).then(response => {
           
           // store.dispatch('user/logout').then(() => {
             location.reload()
@@ -69,7 +69,6 @@ service.interceptors.response.use(
         })
       }
       
-
       return Promise.reject(new Error(res.msg || 'Error'))
     } else {
       return res

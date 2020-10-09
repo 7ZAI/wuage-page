@@ -81,7 +81,7 @@
 
       <el-table-column label="结果"  width="auto"  align="center">
         <template slot-scope="{row}">
-          <span>{{ row.result }}</span>
+          <span>{{ row.resultType == 0?"成功":"失败" }}</span>
         </template>
 
       </el-table-column>

@@ -12,8 +12,8 @@
       >
         <el-form-item label="系统模式" prop="SYSTEM_MODE">
            <el-radio-group v-model="dataForm.SYSTEM_MODE" size="medium">
-              <el-radio-button :label="0" >正常模式</el-radio-button>
-              <el-radio-button :label="1" >演示模式</el-radio-button>
+              <el-radio-button :label=0 >正常模式</el-radio-button>
+              <el-radio-button :label=1 >演示模式</el-radio-button>
             </el-radio-group>
         </el-form-item>
         <el-form-item label="登录开关" prop="LOGIN_SWITCH">
@@ -83,11 +83,11 @@ export default {
     return {
 
         dataForm:{
-          SYSTEM_MODE:'',
-          LOGIN_SWITCH:'',
-          CAPTCHA_SWITCH:'',
-          MAX_LOGIN_ERROR:'',
-          FREEZE_HOUR:1
+          // SYSTEM_MODE:0,
+          // LOGIN_SWITCH:0,
+          // CAPTCHA_SWITCH:0,
+          // MAX_LOGIN_ERROR:0,
+          // FREEZE_HOUR:1
 
         },
      
@@ -121,16 +121,18 @@ export default {
   created() {
     this.getData();
   },
+  mounted(){
+    this.mode =  this.dataForm.SYSTEM_MODE === 0 ? "正常模式":"演示模式"
+  },
   methods: {
 
      getData(){
-          
         getSysConfig().then(response => {
-            // console.log(response.data)
-            this.$nextTick(() => {
-                this.dataForm = response.data
-                this.mode = response.data.SYSTEM_MODE === 0 ? "正常模式":"演示模式"
-             });
+            console.log("-------------"+response.data)
+            
+            this.dataForm = response.data
+               
+            
             
     
         })

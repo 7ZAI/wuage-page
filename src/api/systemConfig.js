@@ -20,9 +20,9 @@ export function updateSysConfig(param) {
   return request({
     url: '/system/config',
     method: 'post',
-    dataType:'json',
-    contentType : 'application/json;charset=utf-8',
-    data:Qs.stringify(param)
+    // dataType:'json',
+    // contentType : 'application/json;charset=utf-8',
+    data:param
   })
 }
 

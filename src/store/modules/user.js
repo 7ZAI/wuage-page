@@ -43,7 +43,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(userInfo).then(response => {
         setisLogin(true)
-        resolve()
+        resolve(response)
       }).catch(error => {
         reject(error)
       })

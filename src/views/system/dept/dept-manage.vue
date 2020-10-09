@@ -14,11 +14,13 @@
     </div>
   <el-table
     :data="deptList"
+   
      v-loading="listLoading"
     style="width: 100%;margin-top:1.5rem;"
     row-key="deptId"
     border
     :tree-props="{children: 'children'}" 
+     :default-expand-all="isExpand"
     >
     <el-table-column
       prop="deptName"
@@ -143,6 +145,7 @@ export default {
           phone: undefined,
           deptParentId:undefined,
         },
+       isExpand:true,
 
         deptRules:{
           deptName:[
@@ -182,6 +185,9 @@ export default {
     created() {
       this.getDepartments()
     },
+    mounted(){
+    
+    },
 
     methods: {
       getDepartments(){
@@ -191,7 +197,14 @@ export default {
             // console.log(response.data)
             this.deptList = response.data
             this.listLoading = false
+
+            
+        }).then(response=>{
+          this.$nextTick(()=>{
+					    document.getElementsByClassName('el-table__expand-icon')[0].click();
+					});
         })
+     
       },
 
       search(){

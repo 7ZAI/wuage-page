@@ -11,7 +11,7 @@
       <div class="title-container">
         <h3 class="title">五阿哥后台管理系统</h3>
       </div>
-      <el-form-item prop="username">
+      <el-form-item prop="loginName">
         <span class="svg-container">
           <svg-icon icon-class="user"/>
         </span>
@@ -66,7 +66,7 @@
       </div>
       <div class="rememberMeDiv">    
         <el-checkbox v-model="loginForm.rememberMe" class="rememberMe"  label="记住我" name="rememberMe"></el-checkbox>
-        <div v-show="this.Config.SYSTEM_MODE == 1">
+        <div v-if="showMode">
           <span style="color:red;font-size:0.12rem;">演示模式</span>
           <span style="color:red;font-size:0.12rem;">账号：test</span>
           <span style="color:red;font-size:0.12rem;">密码:123456</span>
@@ -85,18 +85,28 @@
 <script>
 
 import { getSysLogInConfig } from "@/api/systemConfig";
-import { validUsername } from "@/utils/validate";
+
 export default {
   name: "Login",
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error("请输入正确的用户名"));
+
+    const validateName = (rule, value, callback) => {
+          console.log(value.length)
+      if (value === '' || value === undefined) {
+            callback(new Error('登录名不能为空'));
+      }
+      if (value.length > 0 && value.length <= 20) {
+         callback();
       } else {
-        callback();
+        
+        callback(new Error("登录名长度应在0~20个字符之间！"));
       }
     };
+
     const validatePassword = (rule, value, callback) => {
+       if (value === '' || value === undefined) {
+            callback(new Error('密码不能为空'));
+      }
       if (value.length < 6) {
         callback(new Error("密码格式不正确！"));
       } else {
@@ -105,7 +115,12 @@ export default {
     };
 
     const validateCaptcha = (rule, value, callback) => {
+   
+     if (value === '' || value === undefined) {
+            callback(new Error('验证码不能为空'));
+      }
       if (value.length > 4) {
+         
         callback(new Error("验证码错误！"));
       } else {
         callback();
@@ -126,14 +141,16 @@ export default {
         rememberMe: false
       },
       captchashow:false,
+      showMode:false,
       Config:{
         CAPTCHA_SWITCH:1,
         SYSTEM_MODE:0,
         LOGIN_SWITCH:1,
       },
       loginRules: {
-        loginName: [
-          { required: true, trigger: "blur", validator: validateUsername }
+
+       loginName: [
+          { required: true, trigger: "blur", validator: validateName }
         ],
         password: [
           { required: true, trigger: "blur", validator: validatePassword }
@@ -169,6 +186,7 @@ export default {
         if(responce.data.SYSTEM_MODE === 1){
           this.loginForm.loginName = "test" 
           this.loginForm.password = "123456"
+          this.showMode  = true
         }
 
          if(responce.data.CAPTCHA_SWITCH === 1){
@@ -190,12 +208,16 @@ export default {
     },
     reflash() {
       this.imgurl = this.imgurl + "?date=" + new Date();
+      //  this.$nextTick(() => {
+      //  this.$refs["dataForm"].clearValidate();
+      // });
     },
     // checkMe(){
     //   console.log(this.loginForm.rememberMe);
     // },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
+        console.log(valid)
         if (valid) {
           this.loading = true;
           this.$store
@@ -204,18 +226,17 @@ export default {
             //   return this.$store.dispatch("user/getInfo");
             // })
             .then(() => {
-
             
               this.$router.push({ path: this.redirect || "/" });
               this.loading = false;
             })
-            .catch((responce) => {
+            .catch((error) => {
               this.reflash()
               this.loading = false;
             });
         } else {
           console.log("error submit!!");
-          return false;
+          return 
         }
       });
     }
@@ -291,6 +312,7 @@ $cursor: #fff;
     display: flex;
     line-height: 40px;
     flex-wrap: nowrap;
+     margin-top: 10px;
     margin-bottom: 30px;
     justify-content: space-between;
   }

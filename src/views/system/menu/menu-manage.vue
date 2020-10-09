@@ -281,6 +281,10 @@ import svgIcons from '../../icons/svg-icons'
             // console.log(response.data)
             this.menuList = response.data
             this.listLoading = false
+        }).then(response=>{
+          this.$nextTick(()=>{
+					    document.getElementsByClassName('el-table__expand-icon')[0].click();
+					});
         })
       },
 
