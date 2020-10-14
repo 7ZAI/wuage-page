@@ -104,22 +104,29 @@
         :model="dataForm"
         label-position="left"
         label-width="80px"
-        style="width: 400px; margin-left:50px;"
+        style="width: auto; margin-left:50px;"
       >
-        <el-form-item label="角色名称" prop="roleName">
+        <el-form-item style="width:70%;" label="角色名称" prop="roleName">
            <el-input v-model.trim="dataForm.roleName"/>
         </el-form-item>
-        <el-form-item label="角色代码" prop="roleCode">
+        <el-form-item  style="width:70%;" label="角色代码" prop="roleCode">
           <el-input v-model.trim="dataForm.roleCode"/>
         </el-form-item>
-        <el-form-item label="菜单权限" prop="menuList">
+        <el-form-item label="菜单权限" style="width:100%;" prop="menuList">
+            <template>
+              <!-- <el-checkbox-group > -->
+                <el-checkbox v-model="treeExpand" @change="changeTreeNodeStatus" label="全部展开/全部折叠"></el-checkbox>
+                <el-checkbox v-model="checkAll" @change="handleCheckAllChange" label="全选/全不选"></el-checkbox>
+                <el-checkbox v-model="checkstrictly"  label="父子关联"></el-checkbox>
+              <!-- </el-checkbox-group> -->
+            </template>
 
             <el-tree
               :data="menuTree"
               show-checkbox
               node-key="menuId"
               ref="menus"
-              :check-strictly=false
+              :check-strictly="!checkstrictly"
               :props="menuProps" style="margin-top:5px;">
             </el-tree>
         </el-form-item>
@@ -185,13 +192,12 @@
         </el-form-item>
 
          <el-form-item v-show="deptTreeVisible" label="权限范围" prop="menuList">
+         
             <el-tree
               :data="deptTree"
               show-checkbox
               node-key="deptId"
               ref="depts"
-              :default-expand-all=true
-              :check-strictly=false
               :props="deptProps" style="margin-top:5px;">
             </el-tree>
         </el-form-item>
@@ -289,6 +295,10 @@ export default {
           roleType:undefined,
           menuIds:[]
         },
+
+        treeExpand:false,
+        checkAll:false,
+        checkstrictly:false,
       
         statusOptions: ["启用", "禁用"],
 
@@ -310,6 +320,7 @@ export default {
     this.getMenusForSelect();
   },
 
+
   methods: {
 
 
@@ -325,6 +336,7 @@ export default {
       },
       getMenusForSelect(){
             getMenus().then(response => {
+              // console.log(response.data)
                 this.menuTree = response.data
             })
       },
@@ -362,12 +374,16 @@ export default {
         getMenusSelected(row.roleId).then(response =>{
             
             let selectedMenus = response.data
-            selectedMenus.forEach(ele =>{
-                  let node = this.$refs.menus.getNode(ele)
-                  if(node.isLeaf){
-                    this.$refs.menus.setChecked(ele,true)
-                  }
-            })
+            // console.log("选中的"+  response.data)
+           
+               this.$refs.menus.setCheckedKeys(selectedMenus)
+            // selectedMenus.forEach(ele =>{
+            //       let node = this.$refs.menus.getNode(ele)
+            //       this.$refs.menus.setChecked(node)
+            //       // if(node.isLeaf){
+            //       //   this.$refs.menus.setChecked(ele,true)
+            //       // }
+            // })
           })
        
         this.dialogType = "update";
@@ -595,7 +611,7 @@ export default {
           deptArray.push(ele.deptId)
        })
 
-       console.log(deptArray)
+      //  console.log(deptArray)
       //  let halfArray = this.$refs.depts.getHalfCheckedKeys()
       
       // halfArray.forEach(ele =>{
@@ -625,6 +641,39 @@ export default {
        
      },
 
+      //权限树 全选
+      handleCheckAllChange(val) {
+
+        console.log("全选")
+          if (this.checkAll) {
+              this.$refs.menus.setCheckedNodes(this.menuTree);
+          } else {
+              this.$refs.menus.setCheckedKeys([]);
+          }
+      },
+
+  
+    //改变节点的状态
+    changeTreeNodeStatus(val) {
+      
+      this.expandedMenuTreeOrNot(this.$refs.menus.root)
+      
+    },
+
+    //递归改变 状态
+    expandedMenuTreeOrNot(node){
+      // console.log(this.treeExpand)
+      for(let i = 0; i < node.childNodes.length; i++ ) {
+       //改变节点的自身expanded状态
+        node.childNodes[i].expanded = this.treeExpand;
+       //看看他孩子的长度，有的话就调用自己往下找
+        if(node.childNodes[i].childNodes.length > 0) {
+          this.expandedMenuTreeOrNot(node.childNodes[i]);
+        }
+      }
+      
+    },
+
 
      changeSingleRoleStatus(row){
 
@@ -643,8 +692,6 @@ export default {
 
       let str = '是否确定禁用该角色?'
       let strtitle = '确认禁用'
-        
-      
 
        MessageBox.confirm(str, strtitle, {
           confirmButtonText: '确定',

@@ -57,6 +57,7 @@
             name="captcha"
             tabindex="3"
             auto-complete="on"
+            
             @keyup.enter.native="handleLogin"
           />
         </el-form-item>
@@ -225,8 +226,8 @@ export default {
             // .then(() => {
             //   return this.$store.dispatch("user/getInfo");
             // })
-            .then(() => {
-            
+            .then(response => {
+               console.log("log---"+response.data)
               this.$router.push({ path: this.redirect || "/" });
               this.loading = false;
             })
@@ -312,6 +313,7 @@ $cursor: #fff;
     display: flex;
     line-height: 40px;
     flex-wrap: nowrap;
+    padding-top:4px;
      margin-top: 10px;
     margin-bottom: 30px;
     justify-content: space-between;

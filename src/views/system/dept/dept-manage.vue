@@ -104,7 +104,7 @@
         </el-tree>
         <div slot="footer" class="dialog-footer">
         <el-button @click="dialogDeptTreeVisible = false">取消</el-button>
-        <el-button type="primary" @click="conmfirmSelected()">确定</el-button>
+        <el-button type="primary" @click="comfirmSelected()">确定</el-button>
       </div>
     </el-dialog>
 </div>
@@ -273,10 +273,15 @@ export default {
       this.nodeselected = {deptId:0,deptName:'无'}
     },
 
-    conmfirmSelected(){
+    comfirmSelected(){
         if(typeof(this.nodeselected)==undefined || this.nodeselected == null){
 
         }else{
+
+            if(this.nodeselected.deptId == this.deptForm.deptId){
+              this.$message.warning('不能选择自己为上级部门！')
+              return 
+            }
             this.deptForm.deptParentId = this.nodeselected.deptId
             this.deptForm.parentName = this.nodeselected.deptName
         }
