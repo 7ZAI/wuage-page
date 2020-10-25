@@ -40,10 +40,10 @@
       :key="tableKey"
       v-loading="listLoading"
       :data="logList"
+       style="width: 100%;margin-top:1.5rem;"
       border=""
       fit
       highlight-current-row
-      style="width: 100%;"
       
     >
      <!-- <el-table-column  type="selection"  width="55">

@@ -1,9 +1,9 @@
 <template>
  <div class="app-container">
    <div class="filter-container">
-      <el-input  placeholder="部门名称" v-model="listQuery.keywords" style="width: 200px;" class="filter-item"  />
+      <el-input  placeholder="部门名称" size="small" v-model="listQuery.keywords" style="width: 200px;" class="filter-item"  />
      
-      <el-button v-waves  @click="search()" class="filter-item" type="primary" icon="el-icon-search">
+      <el-button v-waves  @click="search()" size="small" class="filter-item" type="primary" icon="el-icon-search">
         搜索
       </el-button>
    

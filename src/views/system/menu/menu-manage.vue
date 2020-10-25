@@ -1,14 +1,14 @@
 <template>
  <div class="app-container">
    <div class="filter-container">
-      <el-input  placeholder="菜单名称" v-model="listQuery.keywords" style="width: 200px;" class="filter-item"  />
-      <el-select v-model="listQuery.type" placeholder="类型" clearable style="width: 90px" class="filter-item">
+      <el-input  placeholder="菜单名称" v-model="listQuery.keywords" size="small" style="width: 200px;" class="filter-item"  />
+      <el-select v-model="listQuery.type" placeholder="类型" clearable style="width: 90px" size="small" class="filter-item">
          <el-option v-for="item in menuTypes" :key="item.text" :label="item.text" :value="item.value" />
       </el-select>
-      <el-select v-model="listQuery.status" placeholder="显示状态" clearable class="filter-item" style="width: 130px">
+      <el-select v-model="listQuery.status" size="small" placeholder="显示状态" clearable class="filter-item" style="width: 130px">
         <el-option v-for="item in menustatus" :key="item.text" :label="item.text" :value="item.value" />
       </el-select>
-      <el-button v-waves  @click="search()" class="filter-item" type="primary" icon="el-icon-search">
+      <el-button v-waves  @click="search()" class="filter-item" type="primary" size="small" icon="el-icon-search">
         搜索
       </el-button>
       <!-- <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
@@ -99,8 +99,12 @@
         label-width="90px"
         style="width: 400px;height:auto; margin-left:50px;"
       >
-       <el-form-item label="上级菜单" v-if="temp.parentName != null && temp.parentName != undefined && temp.parentName != ''" prop="parentName">
+       <el-form-item label="上级菜单" v-if="temp.parentName != undefined && temp.parentName != undefined && temp.parentName != '顶层菜单'" prop="parentName">
             <el-input @focus="selectParent()"  v-model="temp.parentName"/>
+        </el-form-item>
+         <el-form-item label="上级菜单" v-if="temp.parentName == '顶层菜单'" prop="parentName">
+            <!-- <el-input  v-show="false"  v-model="temp.parentName"/> -->
+            <el-button type="primary" size="mini" @click="selectParent()">选择父菜单</el-button>
         </el-form-item>
         <el-form-item label="菜单名称" prop="menuName">
             <el-input v-model.trim="temp.menuName"/>
@@ -278,7 +282,7 @@ import svgIcons from '../../icons/svg-icons'
         this.listLoading = true
         let data = this.listQuery
         getMenus(data).then(response => {
-            // console.log(response.data)
+            console.log(response.data)
             this.menuList = response.data
             this.listLoading = false
         }).then(response=>{
@@ -334,9 +338,12 @@ import svgIcons from '../../icons/svg-icons'
         
         this.temp = Object.assign({}, row) 
         delete this.temp['updateTime'] 
-        if(typeof(this.temp.parentName) === undefined || this.temp.parentName === null){
-          this.temp.parentName = '无'
+        if(typeof(this.temp.parentName) === undefined || this.temp.parentName === null || this.temp.parentName === ''){
+          console.log("hahahahahahahahahahahah")
+          this.temp.parentName = '顶层菜单'
         }
+
+        console.log(this.temp)
         this.dialogStatus = "update"
         this.dialogFormVisible = true
         this.$nextTick(() => {
@@ -366,7 +373,7 @@ import svgIcons from '../../icons/svg-icons'
 
     selectTop(){
       this.topmenucss = 'topmenu topmenuBg' 
-      this.nodeselected = {menuId:0,menuName:'无'}
+      this.nodeselected = {menuId:0,menuName:'顶层菜单'}
     },
 
     conmfirmSelected(){

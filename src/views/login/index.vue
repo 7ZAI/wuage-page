@@ -134,6 +134,7 @@ export default {
       fit: "fill",
       // fit: ['fill', 'contain', 'cover', 'none', 'scale-down'],
       imgurl: process.env.VUE_APP_TARGET_IP+"/wuage/captchaImage",
+      originUrl: process.env.VUE_APP_TARGET_IP+"/wuage/captchaImage",
       altmsg: "点击更换",
       loginForm: {
         loginName: "",
@@ -208,7 +209,8 @@ export default {
       });
     },
     reflash() {
-      this.imgurl = this.imgurl + "?date=" + new Date();
+      let tempUrl = this.originUrl
+      this.imgurl = tempUrl + "?date=" + new Date();
       //  this.$nextTick(() => {
       //  this.$refs["dataForm"].clearValidate();
       // });

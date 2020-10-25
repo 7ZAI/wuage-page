@@ -584,14 +584,14 @@ export default {
                   this.$message.error('修改失败！')
                   return
               }else{
-                 
+                  this.$message.success('修改成功！')
                   for (const v of this.list) {
                   if (v.userId === this.temp.userId) {
                     const index = this.list.indexOf(v);
                     this.list.splice(index, 1, this.temp);
                     break;
                   }
-                   this.$message.success('修改成功！')
+                  
                 }
               }
             this.dialogFormVisible = false;
