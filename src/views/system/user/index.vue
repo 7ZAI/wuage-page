@@ -72,9 +72,10 @@
       fit
       highlight-current-row
       style="width: 100%;"
+      
       @selection-change="handleSelectionChange"
     >
-
+    
     <el-table-column  type="selection"   width="55">
      </el-table-column>
      <el-table-column label="序号" type="index" width="50" align="center">
@@ -127,6 +128,8 @@
           >删除</el-button>
         </template>
       </el-table-column>
+
+      
     </el-table>
 
     <pagination

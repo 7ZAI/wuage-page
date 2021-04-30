@@ -36,20 +36,20 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
-    },
-    proxy: {
-      // change xxx-api/login => mock/login
-      // detail: https://cli.vuejs.org/config/#devserver-proxy
-      [process.env.VUE_APP_BASE_API]: {
-        // target: `http://121.199.8.229`,
-        target: `http://localhost:80`,
-        changeOrigin: true,
-        // pathRewrite: {
-        //   ['^' + process.env.VUE_APP_BASE_API]: ''
-        // }
-      }
-    },
-    after: require('./mock/mock-server.js')
+    }
+    // proxy: {
+    //   // change xxx-api/login => mock/login
+    //   // detail: https://cli.vuejs.org/config/#devserver-proxy
+    //   [process.env.VUE_APP_BASE_API]: {
+    //     // target: `http://121.199.8.229`,
+    //     target: `http://localhost:80`,
+    //     changeOrigin: true,
+    //     // pathRewrite: {
+    //     //   ['^' + process.env.VUE_APP_BASE_API]: ''
+    //     // }
+    //   }
+    // }
+    // after: require('./mock/mock-server.js')
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
